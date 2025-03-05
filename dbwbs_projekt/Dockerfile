@@ -18,7 +18,7 @@ COPY --from=build /out .
 RUN apt update && apt upgrade
 RUN apt-get install -y wget
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
+#RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
 ENTRYPOINT ["dotnet", "dbwbs_projekt.dll"]
 
