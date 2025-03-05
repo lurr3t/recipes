@@ -1,0 +1,255 @@
+﻿@using dbwbs_projekt.Models.Recipes
+@using OpenAI.ObjectModels
+@model dbwbs_projekt.Models.Recipes.RecipesViewModel
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<div style="font-size: 12px; padding: 5px; font-family: monospace" id="container">
+  
+  <div style="margin-bottom: 20px;" class="input-group d-flex justify-content-center row">
+    <!-- Searchbar -->
+    <form class="col-md-8" asp-action="Recipes" method="get">
+      <div class="align-content-start" style="width: 80%">
+        <div class="input-group">
+          <input id="search-input" type="search" name="searchString" class="form-control" placeholder="Sök" value="@ViewBag.searchString"/>
+          <button style="width: 50px; font-size: 10px" id="clear-button" type="reset" class="btn btn-secondary" onclick="location.href='@Url.Action("ClearSearch", "Recipes")'">
+            <i class="fas fa-times-circle"></i>
+          </button>
+          <button style="width: 80px" id="search-button" type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <form class="col-md-4" asp-action="GetRecipeAi" method="post">
+      <div class="float-end" style="width: 80%">
+        <div class="input-group">
+          <input autocomplete="url" id="search-input" type="search" name="recipeUrl" class="form-control" placeholder="Url"/>
+          <button style="width: 80px" id="add-button" type="submit" class="btn btn-success">
+            <i class="fas fa-add"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    
+
+  </div>
+  <div class="text-left">
+    
+    
+    @{
+      // When adding a recipe
+      if (Model.AddedRecipe != null) {
+        <form asp-action="AddedRecipe" method="post">
+          <!-- Information that must be included-->
+          <input hidden="hidden" name="Url" value="@Model.AddedRecipe.Url"/>
+          <input hidden="hidden" name="edited" value="@Model.Edited"/>
+          <input hidden="hidden" name="Id" value="@Model.AddedRecipe.Id"/>
+          <div style="background-color: #eaffe4">
+
+            <div class="row">
+              <div class="col-4">
+                <!-- Image -->
+                @if (Model.AddedRecipe.ImgUrls != null) {
+
+                  <div style="max-width: 100%; height: auto;" id="slideshow" class="carousel slide" data-interval="0">
+                    <div class="carousel-inner">
+                      @{
+                        bool isFirstImage = true;
+                        int imageIndex = 0;
+                        foreach (var imgUrl in Model.AddedRecipe.ImgUrls) {
+                          <div class="carousel-item @(isFirstImage ? "active" : "")">
+                            <img src="@imgUrl" class="d-block w-100" alt="Slide">
+                          </div>
+                          isFirstImage = false;
+                          imageIndex++;
+                        }
+                      }
+                    </div>
+                    <a class="carousel-control-prev" href="#slideshow" role="button" data-slide="prev" onclick="decreaseImageIndex(@Model.AddedRecipe.ImgUrls.Count - 1)">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#slideshow" role="button" data-slide="next" onclick="increaseImageIndex(@Model.AddedRecipe.ImgUrls.Count - 1)">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </div>
+
+                  <!-- Send the image value and images urls to the controller -->
+                  <input type="hidden" id="imageIndexInput" name="imageIndex" value="0"/>
+                  int i = 0;
+                  foreach (string img in @Model.AddedRecipe.ImgUrls) {
+                    <input type="hidden" name="ImgUrls[@i]" value="@img"/>
+                    i++;
+                  }
+
+
+                }
+              </div>
+
+              <div style="padding: 5px" class="col-8 align-content-start">
+                <input style="width: 80%" class="fw-bold" name="RecipeName" value="@Model.AddedRecipe.RecipeName"/>
+                <textarea style="resize: none; width: 80%" rows="5" cols="60" name="Description">@Model.AddedRecipe.Description</textarea>
+                <div style="display: flex; align-items: center;">
+                  <p class="" style="margin-right: 10px;">Portioner:</p>
+                  <input style="width: 30px; outline: none; background-color: transparent; " name="Portions" value="@Model.AddedRecipe.Portions"/>
+                </div>
+              </div>
+            </div>
+
+            <div class="row justify-content-center">
+              @if (ViewBag.validate != null) {
+                <p style="color: red">@ViewBag.validate</p>
+              }
+              <!-- loop these -->
+              @{
+                int ingredientIndex = 0;
+                foreach (IngredientDetails ingredient in Model.AddedRecipe.Ingredients) {
+                  <div style="width: 50%; height: 50px; margin-top: 2px" class="row align-items-center">
+                    <input type="hidden" name="Ingredients[@ingredientIndex].IngredientId" value="@ingredient.IngredientId"/>
+                    <input class="col-2" name="Ingredients[@ingredientIndex].IngredientQuantity" value="@ingredient.IngredientQuantity"/>
+                    <input class="col-2" name="Ingredients[@ingredientIndex].IngredientUnit" value="@ingredient.IngredientUnit"/>
+                    <input class="col-6" name="Ingredients[@ingredientIndex].IngredientName" value="@ingredient.IngredientName"/>
+                    <button type="submit" style="height: 20px; width: 20px; padding: 0; font-size: 16px;" class="col-1 btn btn-danger" name="deleteIngredientIndex" value="@ingredientIndex">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                  // Adds one more div if the number of ingredients is odd
+                  @if (ingredientIndex == Model.AddedRecipe.Ingredients.Count - 1 && Model.AddedRecipe.Ingredients.Count % 2 == 1) {
+                    <div style="width: 50%; height: 50px; margin-top: 2px" class="row align-items-center"></div>
+                  }
+                  ingredientIndex++;
+                }
+              }
+
+              <div style="padding: 10px" class="row float-end">
+                <p class="col-md-9"></p>
+                <button type="submit" style="width: 40px; height: 40px; margin: 10px" class="col btn btn-success" name="addIngredient" value="true"><i class="fas fa-plus"></i></button>
+                <button type="submit" style="width: 40px; height: 40px; margin: 10px" class="col btn btn-primary"> <i class="fas fa-save"></i></button>
+                <button type="button" style="width: 40px; height: 40px; margin: 10px" class="col btn btn-danger"
+                        onclick="location.href='@Url.Action("AddedRecipeDelete", "Recipes")'"><i class="fas fa-times"></i></button>
+
+              </div>
+
+            </div>
+
+          </div>
+        </form>
+      }
+    }
+    
+    <!-- List of recipes -->
+    @foreach (RecipeDetails recipe in Model.Recipes) {
+      <div>
+        <div class="row collapsible">
+          <div class="col-4">
+            @if (recipe.ImgUrls != null) {
+              <img src="@recipe.ImgUrls.First()" style="max-width: 80%; height: auto;">
+            }
+          </div>
+
+          <div class="col-7 align-content-start">
+            <p class="fw-bold">@recipe.RecipeName</p>
+            <p>@recipe.Description</p>
+            <div style="display: flex; align-items: center;">
+              <p class="" style="margin-right: 10px;">Portioner:</p>
+              <input style="width: 30px; outline: none; background-color: transparent; " name="Portions" value="@recipe.Portions"/>
+            </div>
+
+            
+          </div>
+        </div>
+        <!-- Expands -->
+        <div class="row content">
+          <div class="row">
+            <!-- loop these -->
+            @{
+              foreach (IngredientDetails ingredient in recipe.Ingredients) {
+                <div class="col-4">
+                  <p>@ingredient.IngredientQuantity @ingredient.IngredientUnit @ingredient.IngredientName</p>
+                </div>
+              }
+            }
+          </div>
+
+          <div style="padding: 10px" class="row float-end">
+            <p class="col-7"></p>
+            <button type="button" onclick="window.open('@recipe.Url')" style="width: 80px; height: 40px; margin: 10px" class="btn btn-primary col-2">
+              <i class="fas fa-external-link-alt"></i> Besök sida
+            </button>
+
+            <form class="col-1" asp-action="Edit" method="post">
+              <input type="hidden" id="edit" name="editRecipeId" value="@recipe.Id"/>
+              <button type="submit" style="width: 40px; height: 40px; margin: 10px" class="btn btn-primary"> <i class="fas fa-edit"></i></button>
+            </form>
+            <form class="col-1" asp-action="Delete" method="post">
+              <input type="hidden" id="delete" name="deleteRecipeId" value="@recipe.Id"/>
+              <button type="submit" style="width: 40px; height: 40px; margin: 10px" class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+        
+      }
+  
+
+
+
+  </div>
+</div>
+  
+
+
+<script>
+  //https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapsible_symbol
+  var coll = document.getElementsByClassName("collapsible");
+  var i;
+  for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.maxHeight){
+        content.style.maxHeight = null;
+        content.style.borderBottom = null;
+      } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+        content.style.borderBottom = "solid #d1d1d1";
+      } 
+    });
+  }
+  
+  function increaseImageIndex(upperLimit) {
+    if (parseInt(document.getElementById("imageIndexInput").value) !== upperLimit) {
+      document.getElementById("imageIndexInput").value = parseInt(document.getElementById("imageIndexInput").value) + 1; 
+    } else if (parseInt(document.getElementById("imageIndexInput").value) === upperLimit) {
+      document.getElementById("imageIndexInput").value = 0;
+    }
+    //console.log("Test: " + parseInt(document.getElementById("imageIndexInput").value));
+  
+  }
+  
+  function decreaseImageIndex(highestIndex) {
+    
+    document.getElementById("imageIndexInput").value = parseInt(document.getElementById("imageIndexInput").value) - 1;
+    
+    if (parseInt(document.getElementById("imageIndexInput").value) < 0) {
+      document.getElementById("imageIndexInput").value = highestIndex;
+    }
+    
+    //console.log("Test: " + parseInt(document.getElementById("imageIndexInput").value));
+  }
+
+</script>
+
+
+
+
+

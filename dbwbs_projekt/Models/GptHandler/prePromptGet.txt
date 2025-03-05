@@ -1,0 +1,25 @@
+After the symbol @ all the text is found on a recipe page. 
+The following attributes enclosed by {} must be extracted 
+{ 
+recipe_name = the name of the recipe.
+portions = How many portions or people the recipe is meant for.
+IngredientQuantity = the quantity of each ingredient. Must be a number. 
+IngredientUnit = Must only contain the unit of each ingredient, ex msk, dl, cl, g, kg, st, krm, tsk, l, m.m.
+IngredientName = The name of each ingredient.
+If something is missing, leave it empty.
+If unit or quantity is missing, put everything in IngredientName and leave the others empty. 
+}
+Fit this to a json in the following format. Only output the json. The data in the json is only a example.
+{
+  "RecipeName": "Köttbullar",
+  "Portions": "4",
+  "Description": "En köttbullsrätt",
+  "Ingredients": [
+    {
+      "IngredientQuantity": "3",
+      "IngredientUnit": "cl",
+      "IngredientName": "grädde"
+    }
+  ]
+}
+@

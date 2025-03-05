@@ -1,0 +1,59 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = dbwbs_projekt
+build_property.RootNamespace = dbwbs_projekt
+build_property.ProjectDir = /home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt
+build_property._RazorSourceGeneratorDebug = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/AccountPage/AccountPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudFBhZ2UvQWNjb3VudFBhZ2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/Recipes/Recipes.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVjaXBlcy9SZWNpcGVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/ShoppingListPage/ShoppingListPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvcHBpbmdMaXN0UGFnZS9TaG9wcGluZ0xpc3RQYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/ShoppingLists/ShoppingLists.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hvcHBpbmdMaXN0cy9TaG9wcGluZ0xpc3RzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/xxfallsl/uni_projects/dbwbs_projekt/dbwbs_projekt/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-j5dywr84p1

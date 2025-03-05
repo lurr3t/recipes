@@ -1,0 +1,14 @@
+Join the following lists of ingredients under the @ and output them to a json according to the format in ingredients. Only
+output the json, no explaining text at all!
+Join each IngredientName that matches or is alike. If it matches, use the same IngredientUnit and merge the IngredientQuantity to each other. 
+The data in the json is only an example, do not include it. 
+{
+  "Ingredients": [
+    {
+      "IngredientQuantity": "",
+      "IngredientUnit": "",
+      "IngredientName": ""
+    }
+  ]
+}
+@

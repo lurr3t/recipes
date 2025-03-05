@@ -1,0 +1,59 @@
+﻿@using dbwbs_projekt.Models.ShoppingLists
+@model dbwbs_projekt.Models.ShoppingLists.ShoppingListsDetails
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<div style="font-size: 12px; padding: 5px; font-family: monospace" id="container">
+  <div style="margin-bottom: 20px;" class="input-group d-flex justify-content-center row">
+    <!-- Searchbar -->
+    <form class="col-8" asp-action="ShoppingLists" method="get">
+      <div class="align-content-start" style="width: 80%">
+        <div class="input-group">
+          <input id="search-input" type="search" name="searchString" class="form-control" placeholder="Sök" value="@ViewBag.searchString"/>
+          <button style="width: 50px; font-size: 10px" id="clear-button" type="reset" class="btn btn-secondary" onclick="location.href='@Url.Action("ClearSearch", "ShoppingLists")'">
+            <i class="fas fa-times-circle"></i>
+          </button>
+          <button style="width: 80px" id="search-button" type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+    <form class="col-md-4" asp-action="AddShoppingList" method="post">
+      
+      <div class="float-end" style="width: 80%">
+        <div class="input-group">
+          <input id="search-input" type="search" name="ShoppingListName" class="form-control" placeholder="Inköpslista"/>
+          <button style="width: 80px" id="add-button" type="submit" class="btn btn-success">
+            <i class="fas fa-add"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  @{
+    if (Model.ShoppingLists != null) 
+      foreach (ShoppingListPageDetails shoppingList in Model.ShoppingLists) {
+        <div type="button" onClick="document.getElementById('GoToList_@shoppingList.sl_id').submit();" style="margin-top: 10px" class="row text-left border-bottom">
+          <p class="col fw-bold">@shoppingList.sl_title</p>
+          <p class="col">@shoppingList.Ingredients.Count Ingredienser</p>
+          <form class="col-1" asp-action="DeleteShoppingList" method="post">
+            <button type="submit" style="height: 20px; width: 20px; padding: 0; font-size: 16px;" class="btn btn-danger" name="listId" value="@shoppingList.sl_id">
+              <i class="fas fa-times"></i>
+            </button>
+          </form>
+        </div>
+        <form id="GoToList_@shoppingList.sl_id" asp-controller="ShoppingListPage" asp-action="ShoppingListPage" method="get">
+          <input name="listId" type="hidden" value="@shoppingList.sl_id"/>
+        </form>
+        
+      }
+  }
+  
+  
+</div>

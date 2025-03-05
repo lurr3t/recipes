@@ -1,0 +1,99 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.collapsible {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  border: none;
+  border-bottom: solid #d1d1d1;
+
+}
+
+.active, .collapsible:hover {
+  background-color: #fafafa;
+}
+
+.active {
+  border-bottom: none;
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: #383838;
+  font-weight: bold;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  margin-top: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.popup {
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+}
+.popup-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888888;
+  width: 50%;
+  font-weight: bolder;
+}
+.popup-content button {
+  display: block;
+  margin: 0 auto;
+}
+.show {
+  display: block;
+}
+h1 {
+  color: green;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.edit-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}

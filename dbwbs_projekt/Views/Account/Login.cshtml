@@ -1,0 +1,24 @@
+
+<link rel="stylesheet" runat="server" media="screen" href="~/css/Login.css" />
+
+
+<div class="login-container">
+    <form asp-action="Login" class="login-form" method="post">
+        @if (ViewBag.success != null) {
+            <p style="color: green">@ViewBag.success</p>
+        } else if (ViewBag.unsuccess != null) {
+            <p style="color: #ff1a1a; width: 500px">@ViewBag.unsuccess</p>
+        }
+        <input autocomplete="username" name="username" type="text" placeholder="Username"/>
+        <input autocomplete="current-password" name="password" type="password" placeholder="Password"/>
+        <button name="login" value="1" type="submit">Login</button>
+        <button name="create" value="1" style="margin-top: 5px; background-color: grey" type="submit">Create account</button>
+    </form>
+</div>
+
+
+
+<script>
+var element = document.getElementById("header");
+element.remove();
+</script>

@@ -1,0 +1,28 @@
+# Needs to create a .env file and fill the variables:
+#MSSQL_SA_PASSWORD - DB password
+#GPT_API_KEY - The api key for openai
+#
+# Acess through port 5020
+
+services:
+  db:
+    image: mssql-custom:latest
+    container_name: db_container
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+    ports:
+      - "1433:1433"
+
+  web_app:
+    image: recipes:latest
+    container_name: web_app_recipes_container
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      GPT_API_KEY: ${GPT_API_KEY}
+    depends_on:
+      - db
+    ports:
+      - "5020:8080"
+    #working_dir: /app
+    #command: ["dotnet", "run"]

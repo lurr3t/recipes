@@ -1,0 +1,40 @@
+
+
+<style>
+
+    .user-info {
+        margin-bottom: 20px;
+    }
+    
+    button {
+        background: #333;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    button.logout {
+        background: #f44336;
+    }
+</style>
+
+
+@if (ViewBag.success != null || ViewBag.unsuccess != null) {
+    <p style="color: green">@ViewBag.success</p>
+    <p style="color: #ff0000">@ViewBag.unsuccess</p>
+}
+<div class="user-info">
+    <p><strong>Name:</strong> @ViewBag.username</p>
+</div>
+<div class="row">
+    <form class="col-5" asp-action="ResetPassword" method="post">
+        <input type="password" name="newPassword"/>
+        <button type="submit" id="change-password">Change Password</button>
+    </form>
+    <button type="button" class="logout col-2" onclick="location.href='@Url.Action("Logout", "AccountPage")'">Log Out</button>
+</div>
+
+
+

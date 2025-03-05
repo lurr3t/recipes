@@ -1,0 +1,225 @@
+@using dbwbs_projekt.Models.Recipes
+@using OpenAI.ObjectModels
+@model dbwbs_projekt.Models.ShoppingLists.ShoppingListPageViewModel
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" runat="server" media="screen" href="~/css/checkbox.css" />
+
+
+<div style="font-size: 12px; padding: 5px; font-family: monospace" id="container">
+  
+  <div style="margin-bottom: 20px;" class="input-group d-flex justify-content-center row">
+  <div class="col-4">
+    @if (Model.ShoppingList.sl_title != null) {
+      <form asp-action="UpdateTitle">
+        <div class="input-wrapper">
+          <input name="title" style="width: 80%; border: none; outline: none; font-size: 18px" value="@Model.ShoppingList.sl_title"/>
+          <button name="listId" class="edit-button" value="@Model.ShoppingList.sl_id">
+            <img src="/img/pen.png" alt="Edit" width="20" height="20"/>
+          </button>
+        </div>
+      </form>
+    }
+  </div>
+    <div class="col-8 float-end" style="width: 80%">
+      <form asp-action="AddIngredient" method="post">
+        <div class="input-group">
+          <input id="search-input" type="search" name="amount" class="form-control" placeholder="Mängd"/>
+          <input id="search-input" type="search" name="unit" class="form-control" placeholder="Enhet"/>
+          <input id="search-input" type="search" name="name" class="form-control" placeholder="Namn"/>
+          <button name="regularId" value="@Model.ShoppingList.sl_id" style="width: 80px" id="add-button" type="submit" class="btn btn-success">
+            <i class="fas fa-add"></i>
+          </button>
+          <button style="width: 40px" id="myButton" type="button" class="btn btn-primary">
+            <i class="fas fa-robot"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="undone">
+
+    @if (Model.ShoppingList.Ingredients != null) {
+      int i = 1;
+      foreach (IngredientDetails ingredient in Model.ShoppingList.Ingredients) {
+        if (ingredient.IngredientChecked is 0 or null) {
+          <div style="margin-top: 10px" class="row text-left border-bottom">
+            <div class="col-11 checkbox-wrapper-15">
+              <form id="notDone-@i" asp-action="CheckIngredient" method="post">
+                <input type="hidden" name="listId" value="@Model.ShoppingList.sl_id"/>
+                <input type="hidden" name="ingredientId" value="@ingredient.IngredientId"/>
+                <input value="1" name="check" class="inp-cbx" id="cbx-@i" type="checkbox" style="display: none;" onclick="document.getElementById('notDone-@i').submit();"/>
+                <label class="cbx" for="cbx-@i">
+                  <span>
+                    <svg width="12px" height="9px" viewbox="0 0 12 9">
+                      <polyline points="1 5 4 8 11 1"></polyline>
+                    </svg>
+                  </span>
+                  <span class="fw-bold">@ingredient.IngredientQuantity @ingredient.IngredientUnit @ingredient.IngredientName</span>
+                </label>
+              </form>
+            </div>
+            <form class="col-1" asp-action="DeleteIngredient" method="post">
+              <input type="hidden" name="listId" value="@Model.ShoppingList.sl_id"/>
+              <button type="submit" style="height: 20px; width: 20px; padding: 0; font-size: 16px;" class="btn btn-danger" name="ingredientId" value="@ingredient.IngredientId">
+                <i class="fas fa-times"></i>
+              </button>
+            </form>
+          </div>
+        }
+        i++;  
+      }
+    }
+    
+
+  </div>
+
+
+  <div id="done" class="border-top">
+    @if (Model.ShoppingList.Ingredients != null) {
+      int i = 3000;
+      foreach (IngredientDetails ingredient in Model.ShoppingList.Ingredients) {
+        if (ingredient.IngredientChecked == 1) {
+          <div style="margin-top: 10px" class="row text-left border-bottom">
+            <div class="col-11 checkbox-wrapper-15">
+              <form id="isDone-@i" asp-action="CheckIngredient" method="post">
+                <input type="hidden" name="listId" value="@Model.ShoppingList.sl_id"/>
+                <input type="hidden" name="ingredientId" value="@ingredient.IngredientId"/>
+                <input checked value="0" name="check" class="inp-cbx" id="cbx-@i" type="checkbox" style="display: none;" onclick="document.getElementById('isDone-@i').submit();"/>
+                <label class="cbx" for="cbx-@i">
+                  <span>
+                    <svg width="12px" height="9px" viewbox="0 0 12 9">
+                      <polyline points="1 5 4 8 11 1"></polyline>
+                    </svg>
+                  </span>
+                  <span class="fw-bold">@ingredient.IngredientQuantity @ingredient.IngredientUnit @ingredient.IngredientName</span>
+                </label>
+              </form>
+            </div>
+            <form class="col-1" asp-action="DeleteIngredient" method="post">
+              <input type="hidden" name="listId" value="@Model.ShoppingList.sl_id"/>
+              <button type="submit" style="height: 20px; width: 20px; padding: 0; font-size: 16px;" class="btn btn-danger" name="ingredientId" value="@ingredient.IngredientId">
+                <i class="fas fa-times"></i>
+              </button>
+            </form>
+          </div>
+        }
+        i++;
+      }
+    }
+  </div>
+  
+</div>
+
+<!-- Popup -->
+@if (Model.Search) {
+  
+}
+<div id="myPopup" class="popup" runat="server">
+  <div class="popup-content">
+    <form class="row" asp-action="ShoppingListPage" method="get">
+      <input name="listId" type="hidden" value="@Model.ShoppingList.sl_id"/>
+      <div class="align-content-start col" style="width: 80%">
+        <div class="input-group">
+          <input id="search-input" type="search" name="searchString" class="form-control" placeholder="Sök" value=""/>
+          <button style="width: 50px; font-size: 10px" name="clear" value="1" id="clear-button" type="submit" class="btn btn-secondary" onclick="location.href='@Url.Action("ShoppingListPage", "ShoppingListPage")'">
+            <i class="fas fa-times-circle"></i>
+          </button>
+          <button style="width: 80px" id="search-button" type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+      <button onclick="location.href = '@Url.Action("ShoppingListPage", "ShoppingListPage")?listId=' + @Model.ShoppingList.sl_id;" type="button" class="btn btn-danger col-1">
+        <i class="fas fa-times"></i>
+      </button>
+      
+    </form>
+    <form asp-action="AddIngredientAi" method="post">
+      @{
+        int j = 6000;
+        int k = 0;
+      }
+      @foreach (RecipeDetails recipe in Model.Recipes) {
+        <div style="padding-bottom: 5px; padding-top: 5px" class="border-bottom">
+          <div class="row">
+            <div class="col-4">
+              @if (recipe.ImgUrls != null) {
+                <img src="@recipe.ImgUrls.First()" style="max-width: 80%; height: auto;">
+              }
+            </div>
+            <div class="col-7 align-content-start">
+              <p class="fw-bold">@recipe.RecipeName</p>
+              <div style="display: flex; align-items: center;">
+                <p class="" style="margin-right: 10px;">Portioner:</p>
+                <input style="width: 30px; outline: none; background-color: transparent; " name="Portions" value="@recipe.Portions"/>
+              </div>
+            </div>
+            
+            <div class="col-1 checkbox-wrapper-15" style="display: flex; align-items: center;">
+              <input type="hidden" name="listId" value="@Model.ShoppingList.sl_id"/>
+              <input type="hidden" id="recipe-@j" name="recipeIds[@k]" value="0"/>
+              <!-- Will be removed if there are 0's-->
+              <input class="inp-cbx" id="cbx-@j" type="checkbox" style="display: none;" onclick="Ingredients(@recipe.Id, @j)"/>
+              <label class="cbx" for="cbx-@j">
+                <span>
+                  <svg width="12px" height="9px" viewbox="0 0 12 9">
+                    <polyline points="1 5 4 8 11 1"></polyline>
+                  </svg>
+                </span>
+                <span class="fw-bold"></span>
+              </label>
+            </div>
+            
+          </div>
+        </div>
+        j++;
+        k++;
+      }
+      <button style="width: 80%" id="add-button" type="submit" class="btn btn-success">
+        <i class="fas fa-add"></i>
+      </button>
+    </form>
+  </div>
+</div>
+
+
+@if(Model.Search) {
+  // Makes sure that the popup is active during search
+  <script>
+    var myPopup = document.getElementById("myPopup");
+    myPopup.classList.add("show");
+  </script>
+}
+
+
+<script>
+  //Includes a recipeId if a checkbox is checked
+  function Ingredients(recipeId, recipeIndex) {
+    var check = document.getElementById("cbx-" + recipeIndex);
+    var input = document.getElementById("recipe-" + recipeIndex);
+    
+    if (check.checked) {
+      input.value = recipeId;
+    } else {
+      input.value = 0;
+    }
+      
+    console.log("Index: " + recipeIndex + "Has: " + input.value);
+   
+  }
+</script>
+
+
+
+
+
+
+
