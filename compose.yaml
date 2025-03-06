@@ -13,6 +13,8 @@ services:
       MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
     ports:
       - "1433:1433"
+    volumes:
+      - db_data:/var/opt/mssql
 
   web_app:
     image: recipes:latest
@@ -24,5 +26,6 @@ services:
       - db
     ports:
       - "5020:8080"
-    #working_dir: /app
-    #command: ["dotnet", "run"]
+
+volumes:
+  db_data:
