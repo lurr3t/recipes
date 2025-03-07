@@ -1,1 +1,1 @@
-Fixa så att db hämtar ner sqlcmd istället för från koden
+Fixa så att det inte blir error när det är dubbla indredientQuantity från gpt

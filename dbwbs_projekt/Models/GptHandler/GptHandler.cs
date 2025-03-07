@@ -11,6 +11,7 @@ using OpenAI;
 using OpenAI.Managers;
 using OpenAI.ObjectModels.RequestModels;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 
@@ -37,7 +38,7 @@ public class GptHandler {
     }
     
     public RecipeDetails Run(string url) {
-
+    
         try {
             List<string> imgUrls = new List<string>();
             
@@ -86,10 +87,17 @@ public class GptHandler {
     // Also fills the recipeDetails object with img urls
     private string GetTextFromUrl(string url, List<string> imgUrls) {
         
-        var options = new ChromeOptions();
+        /* var options = new ChromeOptions();
         options.AddArgument("--headless=new");
-        IWebDriver driver = new ChromeDriver(options);
-        
+        IWebDriver driver = new ChromeDriver(options); */
+        //using OpenQA.Selenium.Remote;
+        var driverOptions = new ChromeOptions();
+        driverOptions.AddArgument("--headless");
+        /* driverOptions.AddArgument("--no-sandbox");
+        driverOptions.AddArgument("--disable-dev-shm-usage"); */
+
+        IWebDriver driver = new RemoteWebDriver(new Uri("http://selenium_container:4444/wd/hub"), driverOptions);
+        //IWebDriver driver = new RemoteWebDriver(remoteDriverUri, driverOptions);
         driver.Navigate().GoToUrl(url);
         driver.Manage().Window.Maximize();
         
@@ -131,18 +139,18 @@ public class GptHandler {
         String s = e.Text;
         
         // Find all imgUrls
-      var images = driver.FindElements(By.TagName("img")); 
+        var images = driver.FindElements(By.TagName("img")); 
       
-      // Add all img urls to recipeDetails and removes .svg and .gif
-      foreach (var image in images) { 
-          var imageUrl = image.GetAttribute("src");
+        // Add all img urls to recipeDetails and removes .svg and .gif
+        foreach (var image in images) { 
+            var imageUrl = image.GetAttribute("src");
           
-          if (!imageUrl.EndsWith(".svg") && !imageUrl.EndsWith(".gif")) { 
-              imgUrls?.Add(imageUrl); 
-          } 
-      }
-        
-        driver.Close();
+            if (!imageUrl.EndsWith(".svg") && !imageUrl.EndsWith(".gif")) { 
+                imgUrls?.Add(imageUrl); 
+            } 
+        }
+
+        driver.Quit();
         return s;
     }
     
@@ -153,7 +161,7 @@ public class GptHandler {
 
         string prePrompt =
             File.ReadAllText(
-                @"/Users/ludwigfallstrom/Documents/Programmering/db_teknik/dbwbs_projekt/dbwbs_projekt/Models/GptHandler/prePromptGet.txt");
+                @"prePromptGet.txt");
         
         openAiService.SetDefaultModelId(model);
 
@@ -184,7 +192,7 @@ public class GptHandler {
         }
         string prePrompt =
             File.ReadAllText(
-                @"/Users/ludwigfallstrom/Documents/Programmering/db_teknik/dbwbs_projekt/dbwbs_projekt/Models/GptHandler/prePromptJoin.txt");
+                @"prePromptJoin.txt");
         
         
         //openAiService.SetDefaultModelId(OpenAI.ObjectModels.Models.Gpt_3_5_Turbo_16k);

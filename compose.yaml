@@ -14,7 +14,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - db_data:/var/opt/mssql
+      - db_data2:/var/opt/mssql
 
   web_app:
     image: recipes:latest
@@ -24,8 +24,16 @@ services:
       GPT_API_KEY: ${GPT_API_KEY}
     depends_on:
       - db
+      - selenium
     ports:
       - "5020:8080"
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium_container
+    environment:
+      - VNC_NO_PASSWORD=1
+    ports:
+      - "4444:4444"
 
 volumes:
-  db_data:
+  db_data2:
